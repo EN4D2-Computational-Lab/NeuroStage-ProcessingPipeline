@@ -577,9 +577,8 @@ Or add `EDDY_GPU=OFF` to `.env` to use CPU eddy instead.
 → This is expected if the subject has no ASL acquisition. The step exits cleanly with status `0`, not a failure.
 
 **A step shows `done` in `--status` but I want to re-run it anyway**
-→ ```bash
-./run_pipeline.sh --only fmriprep --force
-```
+```bash
+docker build -f qsiprep_fixed.dockerfile -t pennlinc/qsiprep:fixed .
 ```
 No manual file deletion required.
 
