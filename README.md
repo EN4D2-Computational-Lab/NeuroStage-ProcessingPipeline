@@ -580,6 +580,7 @@ Or add `EDDY_GPU=OFF` to `.env` to use CPU eddy instead.
 → ```bash
 ./run_pipeline.sh --only fmriprep --force
 ```
+```
 No manual file deletion required.
 
 **A step shows `interrupted` or `orphaned_container` in `--status`**
@@ -605,7 +606,6 @@ No manual file deletion required.
 | `aslprep` | `scripts/07_aslprep.sh` | `RUN_ASLPREP` | `ASLPREP_IMAGE` |
 
 
-```
 ---
 ## Acknowledgments
 
