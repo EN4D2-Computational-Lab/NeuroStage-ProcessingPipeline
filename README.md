@@ -578,8 +578,9 @@ Or add `EDDY_GPU=OFF` to `.env` to use CPU eddy instead.
 
 **A step shows `done` in `--status` but I want to re-run it anyway**
 ```bash
-docker build -f qsiprep_fixed.dockerfile -t pennlinc/qsiprep:fixed .
+./run_pipeline.sh --only fmriprep --force
 ```
+
 No manual file deletion required.
 
 **A step shows `interrupted` or `orphaned_container` in `--status`**
