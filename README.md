@@ -592,8 +592,6 @@ No manual file deletion required.
 → `<ID>Processing/logs/`. Each step writes a timestamped log on every run attempt. The master log (`pipeline_<ID>_<datetime>.log`) contains all steps combined. For focused debugging, open the most recent timestamped log for the step that failed.
 
 ---
-
-```
 ## Step Reference
 
 | `--only` / `--from` name | Script | `.env` flag | Docker image |
@@ -606,6 +604,8 @@ No manual file deletion required.
 | `fmriprep` | `scripts/06_fmriprep.sh` | `RUN_FMRIPREP` | `FMRIPREP_IMAGE` |
 | `aslprep` | `scripts/07_aslprep.sh` | `RUN_ASLPREP` | `ASLPREP_IMAGE` |
 
+
+```
 ---
 ## Acknowledgments
 
