@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.Rhistory
+.env
+license.txt
+freesurfer/
+fsl/
+HCPpipelines/
+workbench/
+sub-*/
+*Processing/
+configs/
+*.log
