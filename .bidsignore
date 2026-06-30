@@ -5,6 +5,3 @@ HCPpipelines/
 configs/
 freesurfer/
 workbench/
-*.log
-*.sh.e*
-*.sh.o*
