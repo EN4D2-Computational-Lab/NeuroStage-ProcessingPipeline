@@ -1,4 +1,4 @@
-# NeuroStage — End-to-End Neuroimaging Pipeline
+# NeuroStage: End-to-End Neuroimaging Pipeline
 
 A fully automated neuroimaging preprocessing pipeline. Provide raw DICOMs and a single config file; the pipeline handles everything from BIDS conversion through surface reconstruction, diffusion MRI, functional MRI, and arterial spin labeling preprocessing — and automatically checks your machine is ready before touching any data.
 
@@ -577,9 +577,10 @@ Or add `EDDY_GPU=OFF` to `.env` to use CPU eddy instead.
 → This is expected if the subject has no ASL acquisition. The step exits cleanly with status `0`, not a failure.
 
 **A step shows `done` in `--status` but I want to re-run it anyway**
-→ ```bash
+```bash
 ./run_pipeline.sh --only fmriprep --force
 ```
+
 No manual file deletion required.
 
 **A step shows `interrupted` or `orphaned_container` in `--status`**
@@ -592,7 +593,6 @@ No manual file deletion required.
 → `<ID>Processing/logs/`. Each step writes a timestamped log on every run attempt. The master log (`pipeline_<ID>_<datetime>.log`) contains all steps combined. For focused debugging, open the most recent timestamped log for the step that failed.
 
 ---
-
 ## Step Reference
 
 | `--only` / `--from` name | Script | `.env` flag | Docker image |
@@ -605,14 +605,59 @@ No manual file deletion required.
 | `fmriprep` | `scripts/06_fmriprep.sh` | `RUN_FMRIPREP` | `FMRIPREP_IMAGE` |
 | `aslprep` | `scripts/07_aslprep.sh` | `RUN_ASLPREP` | `ASLPREP_IMAGE` |
 
----
 
+---
 ## Acknowledgments
 
-- [dcm2bids](https://github.com/UNFmontreal/dcm2bids) — DICOM to BIDS conversion
-- [MRIQC](https://mriqc.readthedocs.io) — MRI quality control
-- [FreeSurfer](https://surfer.nmr.mgh.harvard.edu) — structural surface reconstruction
-- [HCP Pipelines](https://github.com/Washington-University/HCPpipelines) — HCP-style structural preprocessing
-- [QSIPrep](https://qsiprep.readthedocs.io) — diffusion MRI preprocessing
-- [fMRIPrep](https://fmriprep.org) — functional MRI preprocessing
-- [ASLPrep](https://aslprep.readthedocs.io) — arterial spin labeling preprocessing
+NeuroStage is an orchestration layer — it does not reimplement any neuroimaging algorithm itself. All actual processing is performed by the open-source tools below, bundled or pulled as Docker images. Full credit for the underlying science and engineering belongs to their respective authors and communities.
+
+### Conversion & data organization
+
+- **[dcm2bids](https://github.com/UNFmontreal/dcm2bids)** — DICOM to BIDS conversion (Bourget, A., et al.)
+- **[dcm2niix](https://github.com/rordenlab/dcm2niix)** — DICOM to NIfTI conversion (Li, X., Morgan, P.S., Ashburner, J., Smith, J., Rorden, C., 2016. *The first step for neuroimaging data analysis: DICOM to NIfTI conversion.* J Neurosci Methods, 264:47-56.)
+- **[BIDS — Brain Imaging Data Structure](https://bids.neuroimaging.io)** (Gorgolewski, K.J., et al., 2016. *The brain imaging data structure, a format for organizing and describing outputs of neuroimaging experiments.* Sci Data, 3:160044.)
+
+### Quality control
+
+- **[MRIQC](https://mriqc.readthedocs.io)** — automated MRI quality metrics and visual reports (Esteban, O., et al., 2017. *MRIQC: Advancing the automatic prediction of image quality in MRI from unseen sites.* PLoS ONE, 12(9):e0184661.)
+
+### Structural processing
+
+- **[FreeSurfer](https://surfer.nmr.mgh.harvard.edu)** — cortical surface reconstruction and parcellation (Fischl, B., 2012. *FreeSurfer.* NeuroImage, 62(2):774-781.)
+- **[HCP Pipelines](https://github.com/Washington-University/HCPpipelines)** — Human Connectome Project structural/functional preprocessing pipelines (Glasser, M.F., et al., 2013. *The minimal preprocessing pipelines for the Human Connectome Project.* NeuroImage, 80:105-124.)
+- **[Connectome Workbench](https://www.humanconnectome.org/software/connectome-workbench)** — surface visualization and processing toolkit (Marcus, D.S., et al., 2011. *Informatics and data mining tools and strategies for the Human Connectome Project.* Front Neuroinform, 5:4.)
+
+### Diffusion MRI
+
+- **[QSIPrep](https://qsiprep.readthedocs.io)** — diffusion MRI preprocessing (Cieslak, M., et al., 2021. *QSIPrep: an integrative platform for preprocessing and reconstructing diffusion MRI data.* Nat Methods, 18:775-778.)
+- **[FSL eddy](https://fsl.fmrib.ox.ac.uk/fsl/fslwiki/eddy)** — eddy current and motion correction (Andersson, J.L.R., Sotiropoulos, S.N., 2016. *An integrated approach to correction for off-resonance effects and subject movement in diffusion MR imaging.* NeuroImage, 125:1063-1078.)
+
+### Functional MRI
+
+- **[fMRIPrep](https://fmriprep.org)** — functional MRI preprocessing (Esteban, O., et al., 2019. *fMRIPrep: a robust preprocessing pipeline for functional MRI.* Nat Methods, 16:111-116.)
+
+### Perfusion / ASL
+
+- **[ASLPrep](https://aslprep.readthedocs.io)** — arterial spin labeling preprocessing (Adebimpe, A., et al., 2022. *ASLPrep: A platform for processing of arterial spin labeled MRI and quantification of regional brain perfusion.* Nat Methods, 19:683-686.)
+
+### Underlying neuroimaging toolboxes
+
+- **[FSL](https://fsl.fmrib.ox.ac.uk)** — FMRIB Software Library, used internally by HCP Pipelines and QSIPrep (Jenkinson, M., et al., 2012. *FSL.* NeuroImage, 62(2):782-790.)
+- **[ANTs / ANTsPy](https://github.com/ANTsX/ANTs)** — image registration and normalization, used internally by fMRIPrep/ASLPrep/QSIPrep (Avants, B.B., et al., 2011. *A reproducible evaluation of ANTs similarity metric performance in brain image registration.* NeuroImage, 54(3):2033-2044.)
+- **[Nipype](https://nipype.readthedocs.io)** — workflow engine underlying fMRIPrep, QSIPrep, ASLPrep, and MRIQC (Gorgolewski, K., et al., 2011. *Nipype: a flexible, lightweight and extensible neuroimaging data processing framework in Python.* Front Neuroinform, 5:13.)
+
+### Core Python / scientific computing libraries
+
+- **[NumPy](https://numpy.org)** (Harris, C.R., et al., 2020. *Array programming with NumPy.* Nature, 585:357-362.)
+- **[Nibabel](https://nipy.org/nibabel/)** — NIfTI/MGZ file I/O
+- **[pydicom](https://pydicom.github.io)** — DICOM file parsing
+- **[tqdm](https://github.com/tqdm/tqdm)** — progress bars
+- **[colorama](https://github.com/tartley/colorama)** — terminal color output
+
+### Containerization
+
+- **[Docker](https://www.docker.com)** — containerized execution of all preprocessing tools
+
+---
+
+If you use NeuroStage in published research, please cite the individual tools listed above according to each project's own citation guidance, in addition to acknowledging this pipeline.
